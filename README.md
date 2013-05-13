@@ -7,6 +7,7 @@ The  algorithm repository will not update any more,so i deleted it. 2013-5-12
 -----------------------------------------------------------------------------
 **brief**: MotionPlayer is a player that can play the animation file in stick mode. Now it support BVH,ASE,TRC. This player has two tracks, you can play two files in the same time.
 
-**note**: this project depends on my motionLib repo
+**note**: this project depends on my motionLib repo, and is built with QtCreator 4.7.0(32bit). You can create a new Qt project, then copy src files to your project.
+
 
 
