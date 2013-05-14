@@ -147,9 +147,23 @@ void OpenGL::paintObject(const int j)
 
 
 
-    for(int i  = 1;i < array[j].boneNum;i++)
+    for(int i  = 0;i < array[j].boneNum;i++)
     {
         //
+
+        if(array[j].parent_of[i] == -1)
+        {
+            //
+            glPointSize(3.1);
+            glBegin(GL_POINTS);
+            glColor3f(1,1,0);//yellow point
+            glVertex3f(
+                    array[j].data[index + i*3+0],\
+                    array[j].data[index + i*3+1],\
+                    array[j].data[index + i*3+2]);
+            glEnd();
+            continue;
+        }
 
         int parent_index = array[j].parent_of[i]*3;
         int child_index = i*3;
@@ -180,7 +194,25 @@ void OpenGL::paintObject(const int j)
   }
   glPopMatrix();
 }
+void OpenGL::paintCoord()
+{
+    glColor3f(1,1,0);//yellow coord
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(1,0,0);//x-axis
+    glEnd();
 
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(0,1,0);//y-axis
+    glEnd();
+
+    glBegin(GL_LINES);
+    glVertex3f(0,0,0);
+    glVertex3f(0,0,1);//z-axis
+    glEnd();
+
+}
 void OpenGL::paintCurve(const int j)
 {
     glPushMatrix();
@@ -239,6 +271,7 @@ void OpenGL::paintGL()
         }
     }
     drawGround();
+   // paintCoord();
 }
 
 void OpenGL::resizeGL(int width, int height)

@@ -331,7 +331,7 @@ void MainWindow::openFile(bool isA)
             this,
             "Open File Dialog",
             "/",
-            "Files (*.ase *.caf *.bvh)");
+            "Files (*.ase *.caf *.bvh *TRC)");
     if(s.size() < 5)
     {
         glWidget->timer.start();
@@ -343,8 +343,10 @@ void MainWindow::openFile(bool isA)
         suffix = "ASE";
     else if(s.toUpper().endsWith("CAF"))
         suffix = "CAF";
-    else
+    else if(s.toUpper().endsWith("BVH"))
         suffix = "BVH";
+    else if(s.toUpper().endsWith("TRC"))
+        suffix = "TRC";
 
     statusStr(s);
 

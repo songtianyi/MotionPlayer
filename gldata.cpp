@@ -133,11 +133,15 @@ void GLData::process(const char *dir,QString suffix)
         delete [] haapkey; haapkey = 0;
         delete [] hposkey; hposkey = 0;
         delete ap; ap = 0;
+
+        valid = true;
+        pause = false;
     }
 
     else if( suffix == "BVH" )
     {
-
+        //valid = true;
+        //pause = false;
     }
     else if(suffix == "CAF")
     {
@@ -152,8 +156,53 @@ void GLData::process(const char *dir,QString suffix)
         name = h->m_name;
         delete ca; ca = NULL;
         delete h; h = NULL;
+
+        valid = true;
+        pause = false;
+    }
+    else if( suffix == "TRC")
+    {
+        HTRCHeader th;
+        CTRCParser trcp;
+        trcp.getTRCHeader(dir,&th);
+        parent_of = new int[th.m_numMarkers];
+        memset(parent_of,-1,sizeof(int)*th.m_numMarkers);
+
+        frameNum = th.m_numFrames;
+        boneNum = th.m_numMarkers;
+        name = "TRC";
+        th.alloc();
+        double *mat = new double[th.m_numFrames*th.m_numMarkers*3];
+        trcp.parse(dir,&th,mat);
+        data = new float[th.m_numFrames*th.m_numMarkers*3];
+        for(int i = 0;i < th.m_numFrames;i++)
+        {
+            for(int j = 0;j < th.m_numMarkers;j++)
+            {
+                float factor = 1.0f/400;
+                int index = i*(th.m_numMarkers*3) + (j*3);
+                data[index] = mat[index + 2]* factor;
+                data[index+1] = mat[index+0] * factor;
+                data[index+2] = mat[index+1] * factor;
+            }
+        }
+        th.dealloc();
+        delete [] mat; mat = 0;
+
+        HCordAnmHeader *cah = new HCordAnmHeader;
+        cah->m_boneNum = boneNum;
+        cah->m_frameNum = frameNum;
+        strcpy(cah->m_name,"song");
+
+        CordAnm *ca = new CordAnm;
+        ca->restore("t.caf",cah,parent_of,data);
+
+        delete ca; ca = NULL;
+        delete cah; cah = 0;
+
+        valid = true;
+        pause = false;
     }
 
-    valid = true;
-    pause = false;
+
 }

@@ -3,11 +3,14 @@
 
 #include <string.h>
 #include <qstring.h>
-#include "F:\MotionCapture\project\lib\CordAnm.h"
-#include "F:\MotionCapture\project\lib\CASEParser.h"
-#include "F:\MotionCapture\project\lib\CBVHParser.h"
-#include "F:\MotionCapture\project\lib\GLPOS.h"
-#include "F:\MotionCapture\project\lib\CVector3f.h"
+#include <qinputdialog.h>
+#include <qlineedit.h>
+#include "I:\MotionCapture\project\lib\CordAnm.h"
+#include "I:\MotionCapture\project\lib\CASEParser.h"
+#include "I:\MotionCapture\project\lib\CBVHParser.h"
+#include "I:\MotionCapture\project\lib\GLPOS.h"
+#include "I:\MotionCapture\project\lib\CVector3f.h"
+#include "I:\MotionCapture\project\lib\TRCParser.h"
 
 class GLData
 {
@@ -17,6 +20,8 @@ public:
     void process(const char *dir,QString suffix);
     void destroy();
     void init();
+
+
 public:
     bool valid;//it is valid when data are set
     bool DRAW_CURVE;

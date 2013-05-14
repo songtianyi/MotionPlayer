@@ -35,6 +35,7 @@ protected:
 
     void paintObject(const int);
     void paintCurve(const int);
+    void paintCoord();
 
     void drawGround();
 
