@@ -44,7 +44,7 @@ void GLData::process(const char *dir,QString suffix)
         init();
     }
     //ASE file
-    if( suffix == "ASE")
+    if( suffix == "ASE" || suffix == "BZ")
     {
         CASEParser *ap = new CASEParser;
         ActionHeader *actHead = new ActionHeader;
@@ -97,15 +97,15 @@ void GLData::process(const char *dir,QString suffix)
         boneNum = actHead->m_boneAnmCount;
         parent_of = new int[boneNum];
         gl->__getParentNodesID(parent_of,actHead,anmHead);
-        data = new float[actHead->m_boneAnmCount*nClipNum*3];
+        data = new CVector3f[actHead->m_boneAnmCount*nClipNum];
         for(int i = 0;i < nClipNum;i++)
         {
             for(int j = 0;j < actHead->m_boneAnmCount;j++)
             {
-                int index = i*(actHead->m_boneAnmCount*3) + (j*3);
-                data[index] = glpos[j*nClipNum + i].x;
-                data[index+1] = glpos[j*nClipNum + i].y;
-                data[index+2] = glpos[j*nClipNum + i].z;
+                int index = i*(actHead->m_boneAnmCount) + (j);
+                data[index].x = glpos[j*nClipNum + i].x;
+                data[index].y = glpos[j*nClipNum + i].y;
+                data[index].z = glpos[j*nClipNum + i].z;
             }
         }
         HCordAnmHeader *cah = new HCordAnmHeader;
@@ -149,7 +149,7 @@ void GLData::process(const char *dir,QString suffix)
         CordAnm *ca = new CordAnm;
         ca->getCordAnmHeader(dir,h);
         parent_of = new int[h->m_boneNum];
-        data = new float[h->m_boneNum*h->m_frameNum*3];
+        data = new CVector3f[h->m_boneNum*h->m_frameNum];
         ca->parse(dir,h,parent_of,data);
         frameNum = h->m_frameNum;
         boneNum = h->m_boneNum;
@@ -172,18 +172,18 @@ void GLData::process(const char *dir,QString suffix)
         boneNum = th.m_numMarkers;
         name = "TRC";
         th.alloc();
-        double *mat = new double[th.m_numFrames*th.m_numMarkers*3];
+        CVector3f *mat = new CVector3f[th.m_numFrames*th.m_numMarkers];
         trcp.parse(dir,&th,mat);
-        data = new float[th.m_numFrames*th.m_numMarkers*3];
+        data = new CVector3f[th.m_numFrames*th.m_numMarkers];
         for(int i = 0;i < th.m_numFrames;i++)
         {
             for(int j = 0;j < th.m_numMarkers;j++)
             {
                 float factor = 1.0f/400;
-                int index = i*(th.m_numMarkers*3) + (j*3);
-                data[index] = mat[index + 2]* factor;
-                data[index+1] = mat[index+0] * factor;
-                data[index+2] = mat[index+1] * factor;
+                int index = i*(th.m_numMarkers) + (j);
+                data[index].x = mat[index].z * factor;
+                data[index].y = mat[index].x * factor;
+                data[index].z = mat[index].y * factor;
             }
         }
         th.dealloc();
@@ -192,7 +192,7 @@ void GLData::process(const char *dir,QString suffix)
         HCordAnmHeader *cah = new HCordAnmHeader;
         cah->m_boneNum = boneNum;
         cah->m_frameNum = frameNum;
-        strcpy(cah->m_name,"song");
+        strcpy(cah->m_name,"test");
 
         CordAnm *ca = new CordAnm;
         ca->restore("t.caf",cah,parent_of,data);

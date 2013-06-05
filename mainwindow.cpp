@@ -72,10 +72,10 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         glWidget->y_angle -=0.04f;
         break;
     case Qt::Key_Up:
-         glWidget->radio -= 0.4f;
+         glWidget->radio -= 0.04f;
         break;
     case Qt::Key_Down:
-        glWidget->radio += 0.4f;
+        glWidget->radio += 0.04f;
         break;
 
     case Qt::Key_J:
@@ -228,13 +228,13 @@ void MainWindow::create()
 
 
     dl[1].setNotchesVisible(true);
-    dl[1].setMinimum(0);
-    dl[1].setMaximum(150);
+    dl[1].setMinimum(200);
+    dl[1].setMaximum(2000);
 
 
     dl[2].setNotchesVisible(true);
     dl[2].setMinimum(1);
-    dl[2].setMaximum(10);//set dial 0,line width
+    dl[2].setMaximum(10);//set dial 2,line width
     dl[2].setValue(5);
 
     gblCpR->addWidget(&dl[0],1,3,2,1);
@@ -285,22 +285,22 @@ void MainWindow::create()
 
 
 
-    QObject::connect(&bn[0],SIGNAL(clicked()),this,SLOT(openFileA()));
+    QObject::connect(&bn[0],SIGNAL(clicked()),this,SLOT(openFileA()));//open file button
     QObject::connect(&bn[1],SIGNAL(clicked()),this,SLOT(openFileB()));
 
-    QObject::connect(&sb[0],SIGNAL(sliderMoved(int)),glWidget,SLOT(setCurrFrameA(int)));
+    QObject::connect(&sb[0],SIGNAL(sliderMoved(int)),glWidget,SLOT(setCurrFrameA(int)));//set current frame
     QObject::connect(&sb[1],SIGNAL(sliderMoved(int)),glWidget,SLOT(setCurrFrameB(int)));
-    QObject::connect(&sb[0],SIGNAL(valueChanged(int)),this,SLOT(setStatusFrameA(int)));
+    QObject::connect(&sb[0],SIGNAL(valueChanged(int)),this,SLOT(setStatusFrameA(int)));//set status bar
     QObject::connect(&sb[1],SIGNAL(valueChanged(int)),this,SLOT(setStatusFrameB(int)));
 
     QObject::connect(&dl[0],SIGNAL(valueChanged(int)),glWidget,SLOT(setTimeInterval(int)));
-
+    QObject::connect(&dl[1],SIGNAL(valueChanged(int)),glWidget,SLOT(setScaleFactor(int)));
     QObject::connect(&dl[2],SIGNAL(valueChanged(int)),glWidget,SLOT(setGroundSize(int)));
 
     QObject::connect(glWidget,SIGNAL(initDataChanged(int,int,int,int)),this,SLOT(setInitData(int,int,int,int)));
     QObject::connect(glWidget,SIGNAL(sliderValueChanged(int,int)),this,SLOT(setSliderValue(int,int)));
 
-    QObject::connect(&sb[0],SIGNAL(sliderPressed()),&(glWidget->timer),SLOT(stop()));
+    QObject::connect(&sb[0],SIGNAL(sliderPressed()),&(glWidget->timer),SLOT(stop()));//timer operation
     QObject::connect(&sb[0],SIGNAL(sliderReleased()),&(glWidget->timer),SLOT(start()));
     QObject::connect(&sb[1],SIGNAL(sliderPressed()),&(glWidget->timer),SLOT(stop()));
     QObject::connect(&sb[1],SIGNAL(sliderReleased()),&(glWidget->timer),SLOT(start()));
@@ -310,10 +310,6 @@ void MainWindow::create()
 
     statusStr("Ready!");
 
-
-
-
-    //statusBar
 }
 void MainWindow::openFileA()
 {
@@ -331,7 +327,7 @@ void MainWindow::openFile(bool isA)
             this,
             "Open File Dialog",
             "/",
-            "Files (*.ase *.caf *.bvh *TRC)");
+            "Files (*.ase *.caf *.bvh *.trc *.bz)");
     if(s.size() < 5)
     {
         glWidget->timer.start();
@@ -347,6 +343,8 @@ void MainWindow::openFile(bool isA)
         suffix = "BVH";
     else if(s.toUpper().endsWith("TRC"))
         suffix = "TRC";
+    else if(s.toUpper().endsWith("BZ"))
+        suffix = "BZ";
 
     statusStr(s);
 

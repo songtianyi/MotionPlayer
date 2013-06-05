@@ -11,6 +11,7 @@
 #include "I:\MotionCapture\project\lib\GLPOS.h"
 #include "I:\MotionCapture\project\lib\CVector3f.h"
 #include "I:\MotionCapture\project\lib\TRCParser.h"
+#include "I:\MotionCapture\project\lib\def.h"
 
 class GLData
 {
@@ -29,7 +30,10 @@ public:
     int frameNum;
     int boneNum;
     int *parent_of;
-    float *data;
+
+
+    CVector3f *data;
+
 
     //play
     QString name;
@@ -37,6 +41,7 @@ public:
     float bone_width;//bone width
     bool pause;//pause = true
     float root_offset[3];//root pos offset x y z
+
 };
 
 #endif // GLDATA_H

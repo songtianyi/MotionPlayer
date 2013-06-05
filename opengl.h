@@ -10,6 +10,24 @@
 #include "qtimer.h"
 #include "omp.h"
 
+#include "I:\MotionCapture\project\lib\CQuaternion.h"
+#include "I:\MotionCapture\project\lib\HMat44.h"
+#include "I:\\MotionCapture\\project\\lib\\CBVHParser.h"
+#include "I:\\MotionCapture\\project\\lib\\CVector3f.h"
+#include "I:\\MotionCapture\\project\\lib\\CQuaternion.h"
+#include "I:\\MotionCapture\\project\\lib\\CQuatInterp.h"
+#include "I:\\MotionCapture\\project\\lib\\CASEParser.h"
+#include "I:\\MotionCapture\\project\\lib\\AAP.h"
+#include "I:\\MotionCapture\\project\\lib\\Bezier.h"
+#include "I:\\MotionCapture\\project\\lib\\Huffman.h"
+#include "I:\\MotionCapture\\project\\lib\\FPC.h"
+#include "I:\\MotionCapture\\project\\lib\\GLPOS.h"
+#include "I:\\MotionCapture\\project\\lib\\SplineInterp.h"
+#include "I:\\MotionCapture\\project\\lib\\CordAnm.h"
+#include "I:\\MotionCapture\\project\\lib\\func.h"
+#include "I:\\MotionCapture\\project\\lib\\def.h"
+#include "I:\\MotionCapture\\project\\lib\\TRCParser.h"
+
 #ifndef GL_SIZE_WIDTH
 #define GL_SIZE_WIDTH 1000
 #endif
@@ -33,16 +51,29 @@ protected:
     void paintGL();
     void resizeGL(int width,int height);
 
-    void paintObject(const int);
-    void paintCurve(const int);
-    void paintCoord();
+    void _drawLine(const CVector3f s,const CVector3f e);
+    void _drawPoint(const CVector3f p,const float pointSize);
+    void _drawQuad(const CVector3f p1,const CVector3f p2,const CVector3f p3,const CVector3f p4);
+
+    void drawObject(const int);
+    void drawCurve(const int);
+    void drawCoord();
+    void newMain();
 
     void drawGround();
 
+    void IK(const int frameIndex,const int boneIndex,\
+                    const int *parent_of,\
+                    const AnmHeader *pAnmHead,const ActionHeader *pActHead,\
+                    CQuaternion *rotkey,const CVector3f *poskey,\
+                    CVector3f *right,CVector3f *ratio4);
 
-
-
-
+    void IK(const int frameIndex,int boneIndex,\
+                    const int *parent_of,\
+                    const AnmHeader *pAnmHead,const ActionHeader *pActHead,\
+                    CQuaternion *rotkey,const CVector3f *poskey,\
+                    CVector3f *right,CVector3f *ratio4,const int *child);
+void drawProcess(CVector3f toe1,CVector3f foot0,CVector3f toe0);
 
 signals:
 
@@ -65,6 +96,8 @@ public slots:
 
     void commonUpdate();
 
+    void setScaleFactor(int);
+
 
 
 
@@ -79,6 +112,25 @@ public:
     QTimer timer;
     QFont textFont;//common
 
+    float scale_factor;
+
+    //temp
+    ActionHeader *actHead;
+    AnmHeader *anmHead;
+    HAnmHeader *hanmHead;
+    int nClipNum;
+    CQuaternion *rotkey;
+    CAAP *aapkey;
+    CQuaternion *hrotkey;
+    CAAP *haapkey;
+    CVector3f *poskey;
+    CVector3f *hposkey;
+    int *father;
+    CVector3f *ratio4;
+    CVector3f *right;
+
+    int childR[1000];
+    int childL[1000];
 
 
 };
