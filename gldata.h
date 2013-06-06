@@ -25,7 +25,6 @@ public:
 
 public:
     bool valid;//it is valid when data are set
-    bool DRAW_CURVE;
 
     int frameNum;
     int boneNum;
@@ -36,9 +35,8 @@ public:
 
 
     //play
-    QString name;
+    QString objectName;
     int curr;//curr_frame
-    float bone_width;//bone width
     bool pause;//pause = true
     float root_offset[3];//root pos offset x y z
 

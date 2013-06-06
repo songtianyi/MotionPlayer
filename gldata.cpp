@@ -7,12 +7,11 @@ GLData::GLData()
 void GLData::init()
 {
     //data
-    name = "";
+    objectName = "";
     parent_of   = NULL;
     data        = NULL;
 
     //play state
-    DRAW_CURVE = true;
     curr = 0;
     pause = true;
     valid = false;
@@ -140,8 +139,39 @@ void GLData::process(const char *dir,QString suffix)
 
     else if( suffix == "BVH" )
     {
-        //valid = true;
-        //pause = false;
+        //parse bvh file
+        CBVHParser bp;
+        HBVHHead pHead;
+        HBVHJoint bjoint[BVH_MAX_JOINT];
+        pHead.alloc();
+        bp.getBVHHeader(dir,&pHead,bjoint);
+        CVector3f *datamat = new CVector3f[pHead.m_columNum/3*pHead.m_frameNum];
+        bp.parse(dir,&pHead,bjoint,datamat);
+
+        //calculate 3d coord
+        GLPOS gl;
+        data = new CVector3f[pHead.m_jointNum*pHead.m_frameNum];
+        parent_of = new int[pHead.m_jointNum];
+        memcpy(parent_of,pHead.m_parentOf,sizeof(int)*pHead.m_jointNum);
+        frameNum = pHead.m_frameNum;
+        boneNum = pHead.m_jointNum;
+
+        gl.getGLPos(data,&pHead ,bjoint,datamat);
+        float scale = 0.125;
+        for(int i = 0;i < pHead.m_frameNum;i++)
+        {
+            int index = i*pHead.m_jointNum;
+            for(int j = 0;j < pHead.m_jointNum;j++)
+            {
+                CVector3f t(data[index + j].x,data[index + j].z,data[index + j].y);
+                data[index+j] = t * scale;
+            }
+        }
+
+        delete [] datamat; datamat = 0;
+        pHead.dealloc();
+        valid = true;
+        pause = false;
     }
     else if(suffix == "CAF")
     {
@@ -153,7 +183,7 @@ void GLData::process(const char *dir,QString suffix)
         ca->parse(dir,h,parent_of,data);
         frameNum = h->m_frameNum;
         boneNum = h->m_boneNum;
-        name = h->m_name;
+        objectName = h->m_name;
         delete ca; ca = NULL;
         delete h; h = NULL;
 
@@ -170,35 +200,23 @@ void GLData::process(const char *dir,QString suffix)
 
         frameNum = th.m_numFrames;
         boneNum = th.m_numMarkers;
-        name = "TRC";
+
         th.alloc();
-        CVector3f *mat = new CVector3f[th.m_numFrames*th.m_numMarkers];
-        trcp.parse(dir,&th,mat);
         data = new CVector3f[th.m_numFrames*th.m_numMarkers];
+        trcp.parse(dir,&th,data);
         for(int i = 0;i < th.m_numFrames;i++)
         {
             for(int j = 0;j < th.m_numMarkers;j++)
             {
                 float factor = 1.0f/400;
                 int index = i*(th.m_numMarkers) + (j);
-                data[index].x = mat[index].z * factor;
-                data[index].y = mat[index].x * factor;
-                data[index].z = mat[index].y * factor;
+                CVector3f t(data[index].z * factor,\
+                            data[index].x * factor,\
+                            data[index].y * factor);
+                data[index] = t;
             }
         }
         th.dealloc();
-        delete [] mat; mat = 0;
-
-        HCordAnmHeader *cah = new HCordAnmHeader;
-        cah->m_boneNum = boneNum;
-        cah->m_frameNum = frameNum;
-        strcpy(cah->m_name,"test");
-
-        CordAnm *ca = new CordAnm;
-        ca->restore("t.caf",cah,parent_of,data);
-
-        delete ca; ca = NULL;
-        delete cah; cah = 0;
 
         valid = true;
         pause = false;

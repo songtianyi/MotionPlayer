@@ -64,6 +64,10 @@ private:
 
     void setStatusOffsetValue(const float *offset,const int index);
 
+    void IJKLResponse(bool checked,int indexObject,int indexOffset,bool addORminus);
+    void LeftRightResponse(const bool checked,const bool underCondition,\
+                                       const int indexObject,const bool addORminus);
+
 private:
 
     OpenGL      *glWidget;

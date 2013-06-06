@@ -54,7 +54,37 @@ void MainWindow::setSliderValue(const int index, const int v)
     sb[index].setValue(v);
 }
 
-
+void MainWindow::IJKLResponse(bool checked,int indexObject,int indexOffset,bool addORminus)
+{
+    //add = true,minus = false
+    if(checked)
+    {
+        if(addORminus)
+            glWidget->array[indexObject].root_offset[indexOffset] += 0.2f;
+        else
+            glWidget->array[indexObject].root_offset[indexOffset] -= 0.2f;
+        setStatusOffsetValue(glWidget->array[indexObject].root_offset,indexObject);
+    }
+}
+void MainWindow::LeftRightResponse(const bool checked,const bool underCondition,\
+                                   const int indexObject,const bool addORminus)
+{
+    if( checked && underCondition )
+    {
+        if(addORminus)
+        {
+            //add
+            glWidget->array[indexObject].curr += 1;
+            sb[indexObject].setValue(sb[indexObject].value()+1);
+        }
+        else
+        {
+            //minus
+            glWidget->array[indexObject].curr -= 1;
+            sb[indexObject].setValue(sb[indexObject].value()-1);
+        }
+    }
+}
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     switch( e->key() ){
@@ -79,77 +109,28 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         break;
 
     case Qt::Key_J:
-        if(cb[0].isChecked())
-        {
-            glWidget->array[0].root_offset[0] -= 0.2f;
-            setStatusOffsetValue(glWidget->array[0].root_offset,0);
-        }
-        if(cb[1].isChecked())
-        {
-            glWidget->array[1].root_offset[0] -= 0.2f;
-            setStatusOffsetValue(glWidget->array[1].root_offset,1);
-        }
+        IJKLResponse(cb[0].isChecked(),0,0,false);
+        IJKLResponse(cb[1].isChecked(),1,0,false);
         break;
     case Qt::Key_L:
-        if(cb[0].isChecked())
-        {
-            glWidget->array[0].root_offset[0] += 0.2f;
-            setStatusOffsetValue(glWidget->array[0].root_offset,0);
-        }
-        if(cb[1].isChecked())
-        {
-            glWidget->array[1].root_offset[0] += 0.2f;
-            setStatusOffsetValue(glWidget->array[1].root_offset,1);
-        }
+        IJKLResponse(cb[0].isChecked(),0,0,true);
+        IJKLResponse(cb[1].isChecked(),1,0,true);
         break;
     case Qt::Key_K:
-        if(cb[0].isChecked())
-        {
-            glWidget->array[0].root_offset[1] -= 0.2f;
-            setStatusOffsetValue(glWidget->array[0].root_offset,0);
-        }
-        if(cb[1].isChecked())
-        {
-            glWidget->array[1].root_offset[1] -= 0.2f;
-            setStatusOffsetValue(glWidget->array[1].root_offset,1);
-        }
+        IJKLResponse(cb[0].isChecked(),0,1,false);
+        IJKLResponse(cb[1].isChecked(),1,1,false);
         break;
     case Qt::Key_I:
-        if(cb[0].isChecked())
-        {
-            glWidget->array[0].root_offset[1] += 0.2f;
-            setStatusOffsetValue(glWidget->array[0].root_offset,0);
-        }
-        if(cb[1].isChecked())
-        {
-            glWidget->array[1].root_offset[1] += 0.2f;
-            setStatusOffsetValue(glWidget->array[1].root_offset,1);
-        }
+        IJKLResponse(cb[0].isChecked(),0,1,true);
+        IJKLResponse(cb[1].isChecked(),1,1,true);
         break;
     case Qt::Key_Left:
-        if(cb[0].isChecked() && glWidget->array[0].curr > 0)
-        {
-            glWidget->array[0].curr -= 1;
-            sb[0].setValue(sb[0].value()-1);
-
-        }
-        if(cb[1].isChecked() && glWidget->array[1].curr > 0)
-        {
-            glWidget->array[1].curr -= 1;
-            sb[1].setValue(sb[1].value()-1);
-        }
+        LeftRightResponse(cb[0].isChecked(),(glWidget->array[0].curr > 0),0,false);
+        LeftRightResponse(cb[1].isChecked(),(glWidget->array[1].curr > 0),1,false);
         break;
     case Qt::Key_Right:
-        if(cb[0].isChecked() && glWidget->array[0].curr < glWidget->array[0].frameNum-1)
-        {
-            glWidget->array[0].curr += 1;
-            sb[0].setValue(sb[0].value()+1);
-        }
-        if(cb[1].isChecked() && glWidget->array[1].curr < glWidget->array[1].frameNum-1)
-        {
-            glWidget->array[1].curr += 1;
-            sb[1].setValue(sb[1].value()+1);
-        }
+        LeftRightResponse(cb[0].isChecked(),(glWidget->array[0].curr < glWidget->array[0].frameNum-1),0,true);
+        LeftRightResponse(cb[1].isChecked(),(glWidget->array[0].curr < glWidget->array[0].frameNum-1),1,true);
         break;
     case Qt::Key_Space:
         if(cb[0].isChecked() && glWidget->array[0].valid)
@@ -177,9 +158,12 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
             glWidget->destroyObject(1);
         }
         break;
-
-
-
+    case Qt::Key_N:
+        glWidget->showBoneNum = !glWidget->showBoneNum;
+        break;
+    case Qt::Key_C:
+        glWidget->showCoord = !glWidget->showCoord;
+        break;
     default:
         break;
     }
