@@ -2,7 +2,7 @@
 
 OpenGL::OpenGL(QWidget *parent) :
     QGLWidget(parent)
-{   
+{
         x_angle = 0.0f;
         y_angle = 0.0f;
         radio = 10.0f;
