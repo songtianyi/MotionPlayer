@@ -1,10 +1,24 @@
+/**
+ * gldata.h
+ *
+ * Copyright (c) 2013, Dalian Nationalities University. All Rights  Reserved.
+ * Tianyi Song <songtianyi630@163.com>
+ *
+ * You can use this file in your project, but do not redistribute it and/or modify
+ * it.
+ *
+ */
+
 #ifndef GLDATA_H
 #define GLDATA_H
+
 
 #include <string.h>
 #include <qstring.h>
 #include <qinputdialog.h>
 #include <qlineedit.h>
+
+/*this is my include directory, you can change it to yours*/
 #include "I:\MotionCapture\project\lib\CordAnm.h"
 #include "I:\MotionCapture\project\lib\CASEParser.h"
 #include "I:\MotionCapture\project\lib\CBVHParser.h"
