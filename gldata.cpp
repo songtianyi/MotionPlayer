@@ -37,6 +37,14 @@ GLData::~GLData()
 }
 void GLData::process(const char *dir,QString suffix)
 {
+    int len = strlen(dir);
+    for(int i = 0;i < len;i++)
+    {
+        if( dir[i] == '?')
+        {
+            return ;
+        }
+    }
     if(valid == true)
     {
         destroy();
