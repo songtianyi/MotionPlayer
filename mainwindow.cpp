@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     this->setFixedSize(1000,670);
-    this->setWindowTitle("Motion Player");
+    this->setWindowTitle("Motion Player @songtianyi");
 }
 
 void MainWindow::setInitData(const int index,const int sliderValue,const int sliderMax,const int dialValue)
@@ -304,6 +304,9 @@ void MainWindow::openFileB()
 {
     openFile(false);
 }
+
+
+
 void MainWindow::openFile(bool isA)
 {
     glWidget->timer.stop();
@@ -312,6 +315,9 @@ void MainWindow::openFile(bool isA)
             "Open File Dialog",
             "/",
             "Files (*.ase *.caf *.bvh *.trc *.bz)");
+
+    statusStr(s);
+
     if(s.size() < 5)
     {
         glWidget->timer.start();
@@ -329,8 +335,6 @@ void MainWindow::openFile(bool isA)
         suffix = "TRC";
     else if(s.toUpper().endsWith("BZ"))
         suffix = "BZ";
-
-    statusStr(s);
 
     glWidget->getObjectData(s.toStdString().c_str(),suffix,!isA);
 
