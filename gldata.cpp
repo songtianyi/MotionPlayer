@@ -115,16 +115,7 @@ void GLData::process(const char *dir,QString suffix)
                 data[index].z = glpos[j*nClipNum + i].z;
             }
         }
-        HCordAnmHeader *cah = new HCordAnmHeader;
-        cah->m_boneNum = boneNum;
-        cah->m_frameNum = frameNum;
-        strcpy(cah->m_name,"song");
 
-        CordAnm *ca = new CordAnm;
-        ca->restore("t.caf",cah,parent_of,data);
-
-        delete ca; ca = NULL;
-        delete cah; cah = 0;
 
         //free memory
         delete [] glpos; glpos = NULL;
@@ -224,6 +215,18 @@ void GLData::process(const char *dir,QString suffix)
                 data[index] = t;
             }
         }
+        //export to caf
+        HCordAnmHeader *cah = new HCordAnmHeader;
+        cah->m_boneNum = boneNum;
+        cah->m_frameNum = frameNum;
+        strcpy(cah->m_name,"song");
+        memset(parent_of,-1,sizeof(int)*cah->m_boneNum);
+
+        CordAnm *ca = new CordAnm;
+        ca->restore("t.caf",cah,parent_of,data);
+        delete ca; ca = NULL;
+        delete cah; cah = 0;
+
         th.dealloc();
 
         valid = true;
