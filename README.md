@@ -11,6 +11,6 @@ The  algorithm repository will not update any more,so i deleted it. 2013-5-12
 
 
 -----------------------------------------------------------------------------
-*.pro file config*
+**.pro file config**
 QT += opengl
 CONFIG += console
