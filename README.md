@@ -10,7 +10,7 @@ The  algorithm repository will not update any more,so i deleted it. 2013-5-12
 **note**: this project depends on my motionLib repo, and is built with QtCreator 4.7.0(32bit). You can create a new Qt project, then copy src files to your project.
 
 
------------------------------------------------------------------------------.
-.pro file config
+-----------------------------------------------------------------------------
+*.pro file config*
 QT += opengl
 CONFIG += console
